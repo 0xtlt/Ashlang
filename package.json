@@ -1,0 +1,12 @@
+{
+  "name": "ashlang",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/ashlang.js",
+  "scripts": {
+    "test": "node ./ashlang.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
