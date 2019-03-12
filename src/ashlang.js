@@ -45,7 +45,9 @@ const reg = {
     console: /^csl\.(.*)/gm,
     if: /^if (.*)/gm,
     class: /^class (([a-zA-Z]|\d|_)+)/gm,
-    catch: /^catch\((([^\)])+)\)/gm,
+    catch: /^catch\((.*)/gm,
+    switch: /^switch\((.*)/gm,
+    case: /^case(.*)/gm,
 };
 
 function test(regex, string){
@@ -195,6 +197,13 @@ function parse(file, callback){
 
                         reg.funcParamSet.lastIndex = 0;
                     }
+                } else if(scLine === "break"){ // break
+                    javascriptProg += `break;`;
+                } else if(scLine === "default"){ // default
+                    javascriptProg += `default:`;
+                } else if(test(reg.case, scLine)){ // case
+                    let tmp = execute(reg.case, scLine);
+                    javascriptProg += `case ${tmp[1]}:`;
                 } else if(scLine === "try"){ // try
                     lastT.push(numberOfTab);
                     javascriptProg += `try {`;
@@ -202,7 +211,12 @@ function parse(file, callback){
                     let tmp = execute(reg.catch, scLine);
 
                     lastT.push(numberOfTab);
-                    javascriptProg += `catch(${tmp[1]}){`;
+                    javascriptProg += `catch(${tmp[1].substr(0, tmp[1].length - 1)}){`;
+                } else if(test(reg.switch, scLine)){ // switch
+                    let tmp = execute(reg.switch, scLine);
+
+                    lastT.push(numberOfTab);
+                    javascriptProg += `switch(${tmp[1].substr(0, tmp[1].length - 1)}){`;
                 } else if(test(reg.if, scLine)){ // if
                     let tmp = execute(reg.if, scLine);
 

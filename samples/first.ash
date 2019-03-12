@@ -31,3 +31,16 @@ elsif randomNumber < 0.7
     csl.log(json.key)
 else
     csl.log(":)")
+
+_test = 5
+
+switch(test)
+    case 1
+        csl.log("just")
+        break
+    case 2
+        csl.log("do")
+        break
+    default
+        csl.log("it")
+        break
