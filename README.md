@@ -24,7 +24,8 @@ ashlang /path/to/script.ash
 Compile a script:
 
 ```shell
-ashlang -c /path/to/script.ash
+ashlang /path/to/script.ash -c
+ashlang /path/to/script.ash --compile /path/to/script.js
 ```
 
 ## The Readme file is in progress

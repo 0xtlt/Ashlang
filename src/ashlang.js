@@ -45,7 +45,6 @@ const reg = {
     console: /^csl\.(.*)/gm,
     if: /^if (.*)/gm,
     class: /^class (([a-zA-Z]|\d|_)+)/gm,
-    intfunc: /(([a-zA-Z]| |\d|_)+)\((([a-zA-Z]| |\d|_|"|'|`)+)\);/mgs
 };
 
 function test(regex, string){
