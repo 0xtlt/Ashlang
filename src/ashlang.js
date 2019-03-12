@@ -45,6 +45,7 @@ const reg = {
     console: /^csl\.(.*)/gm,
     if: /^if (.*)/gm,
     class: /^class (([a-zA-Z]|\d|_)+)/gm,
+    catch: /^catch\((([^\)])+)\)/gm,
 };
 
 function test(regex, string){
@@ -194,6 +195,14 @@ function parse(file, callback){
 
                         reg.funcParamSet.lastIndex = 0;
                     }
+                } else if(scLine === "try"){ // try
+                    lastT.push(numberOfTab);
+                    javascriptProg += `try {`;
+                } else if(test(reg.catch, scLine)){ // catch
+                    let tmp = execute(reg.catch, scLine);
+
+                    lastT.push(numberOfTab);
+                    javascriptProg += `catch(${tmp[1]}){`;
                 } else if(test(reg.if, scLine)){ // if
                     let tmp = execute(reg.if, scLine);
 
