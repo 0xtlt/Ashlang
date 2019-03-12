@@ -1,13 +1,13 @@
 {
   "name": "ashlang",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Ashlang is a little language that compiles into JavaScript.",
   "main": "src/ashlang.js",
   "scripts": {
     "test": "node ./ashlang.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Thomas Tastet",
   "license": "MIT",
   "dependencies": {},
   "bin": {
