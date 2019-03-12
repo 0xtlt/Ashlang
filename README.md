@@ -8,7 +8,7 @@ Ashlang is a little language that compiles into JavaScript.
 # Install locally for a project:
 npm install --save-dev ashlang
 
-# Install globally to execute .coffee files anywhere:
+# Install globally to execute .ash files anywhere:
 npm install --global ashlang
 ```
 
