@@ -1,6 +1,6 @@
 {
   "name": "ashlang",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Ashlang is a little language that compiles into JavaScript.",
   "main": "src/ashlang.js",
   "scripts": {

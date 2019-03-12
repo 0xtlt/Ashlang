@@ -29,6 +29,7 @@ const reg = {
     import: /import \(((\n|\r|'|"|[a-zA-Z]| |\d|\.)+)\)(.*)/gms,
     subImport: /(("|')+)(([a-zA-Z]| |\d|_|"|'|`)+)(("|')+)(( |)+)(([a-zA-Z]| |)+)/gms,
     func: /^func (([a-zA-Z]| |\d|_)+)\(((|[a-zA-Z]|@| |\d|,)+)\)/gms,
+    staticFunc: /^func# (([a-zA-Z]| |\d|_)+)\(((|[a-zA-Z]|@| |\d|,)+)\)/gms,
     letvar: /^\$(([^:]*)+):(.*)/gm,
     thisvar: /^@(([^:]*)+):(.*)/gm,
     constvar: /^_(([^:]*)+):(.*)/gm,
@@ -189,6 +190,24 @@ function parse(file, callback){
                         javascriptProg += `function ${tmp[1]}(${tmp[3]}){`;
                     } else {
                         javascriptProg += `${tmp[1]}(${tmp[3].replace(/@/g, "")}){`+lastC;;
+                        let tmp_;
+
+                        while((tmp_ = reg.funcParamSet.exec(tmp[3])) !== null){
+                            javascriptProg += tab("    ", numberOfTab+1)+`this.${tmp_[1]} = ${tmp_[1]};`+lastC;
+                        }
+
+                        reg.funcParamSet.lastIndex = 0;
+                    }
+                } else if(test(reg.staticFunc, scLine)){ // func# -> static function
+                    let tmp = execute(reg.staticFunc, scLine);
+
+                    //indicates that a block of code is open
+                    lastT.push(numberOfTab);
+
+                    if(inClass === null){
+                        javascriptProg += `function ${tmp[1]}(${tmp[3]}){`;
+                    } else {
+                        javascriptProg += `static ${tmp[1]}(${tmp[3].replace(/@/g, "")}){`+lastC;;
                         let tmp_;
 
                         while((tmp_ = reg.funcParamSet.exec(tmp[3])) !== null){
