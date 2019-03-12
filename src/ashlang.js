@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 const fs = require("fs");
 const args = require('./args');
 const vm = require('vm');
 
 const argsData = args(process.argv);
-console.log(argsData);
+//console.log(argsData); //Debug only
 
 parse(argsData.fileToExecute, function(js){
     if(argsData.execute){
