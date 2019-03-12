@@ -11,6 +11,9 @@ module.exports = function(args){
         } else {
             if(args[i].substr(args[i].length-4) === ".ash"){
                 fileToExecute = args[i];
+                if(destinationFile === true){
+                    destinationFile = fileToExecute.substr(0, fileToExecute.length-4) + ".js";
+                }
             }
     
             if(fileToExecute){
@@ -19,7 +22,7 @@ module.exports = function(args){
                     nextIsDestinationFilePath = true;
                 } else if(args[i].substr(0,2) === "-c"){
                     execute = false;
-                    destinationFile = fileToExecute.substr(0, fileToExecute.length-4) + ".js";
+                    destinationFile = true;
                 }
             }
         }
