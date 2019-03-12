@@ -35,7 +35,7 @@ const reg = {
     letAll: /^(([a-zA-Z]|\d|_)+)(.):(.*)/gm,
     letPlus: /^(([a-zA-Z]|\d|_)+)\+\+/gm,
     letMinus: /^(([a-zA-Z]|\d|_)+)--/gm,
-    letChange: /^(([a-zA-Z]|\d|_)+):(.*)/gm,
+    letChange: /^(([a-zA-Z]|\d|_|\[|\]|"|')+):(.*)/gm,
     longLetvar: /^\$(([a-zA-Z]|\d|_)+)::(.*)/gm,
     longLetconst: /^_(([a-zA-Z]|\d|_)+)::(.*)/gm,
     for: /^for (([^,]*)+),(([^,]*)+),(.*)/gm,
