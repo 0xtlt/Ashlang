@@ -5,7 +5,7 @@ module.exports = function(args){
     let nextIsDestinationFilePath = false;
 
     for(let i = 0;i <= args.length - 1; i++){
-        if(nextIs){
+        if(nextIsDestinationFilePath){
             nextIsDestinationFilePath = false;
             destinationFile = args[i];
         } else {
