@@ -11,18 +11,20 @@ module.exports = function(args){
         } else {
             if(args[i].substr(args[i].length-4) === ".ash"){
                 fileToExecute = args[i];
-                if(destinationFile === true){
-                    destinationFile = fileToExecute.substr(0, fileToExecute.length-4) + ".js";
+                if(destinationFile === "waiting"){
+                    destinationFile = args[i].substr(0, args[i].length-4) + ".js";
                 }
+
+                break;
             }
     
-            if(fileToExecute){
+            if(!fileToExecute){
                 if(args[i].substr(0,9) === "--compile"){
                     execute = false;
                     nextIsDestinationFilePath = true;
                 } else if(args[i].substr(0,2) === "-c"){
                     execute = false;
-                    destinationFile = true;
+                    destinationFile = "waiting";
                 }
             }
         }
