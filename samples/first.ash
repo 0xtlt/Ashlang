@@ -1,7 +1,7 @@
-import (
-'express' as webapp
-'twitter'
-)
+#import (
+#'express' as webapp
+#'twitter'
+#)
 
 class Message
     func constructor(@name, @content)

@@ -1,4 +1,23 @@
 const fs = require("fs");
+const args = require('./args');
+const vm = require('vm');
+
+const argsData = args(process.argv);
+console.log(argsData);
+
+parse(argsData.fileToExecute, function(js){
+    if(argsData.execute){
+        let sandbox = {
+            console
+        };
+        vm.createContext(sandbox);
+        vm.runInContext(js, sandbox);
+    
+        return sandbox;
+    } else if(argsData.destinationFile){
+        writeJs(argsData.destinationFile, js);
+    }
+});
 
 const reg = {
     // Regex name
@@ -45,7 +64,7 @@ const lastC = "\n";
  * @param {string} file 
  * @param {string} out 
  */
-function parse(file, out){
+function parse(file, callback){
     fs.readFile(file, "utf-8", function(err, buf){
         let ashProg = buf.toString();
         let javascriptProg = "";
@@ -219,10 +238,14 @@ function parse(file, out){
             return tab("    ", x)+"}"+lastC;
         });
 
-        fs.writeFile(out, javascriptProg, function(err, data) {
-            if (err) console.log(err);
-            console.log("Successfully Written to File.");
-        });
+        callback(javascriptProg);
+    });
+}
+
+function writeJs(out, javascriptProg){
+    fs.writeFile(out, javascriptProg, function(err, data) {
+        if (err) console.log(err);
+        console.log("Successfully Written to File.");
     });
 }
 
@@ -283,5 +306,3 @@ function parseVar(line){
         return null;
     }
 }
-
-parse("file.ash", "dist.js");

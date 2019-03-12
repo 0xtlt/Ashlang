@@ -1,12 +1,24 @@
 {
   "name": "ashlang",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Ashlang is a little language that compiles into JavaScript.",
   "main": "src/ashlang.js",
   "scripts": {
     "test": "node ./ashlang.js"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {},
+  "bin": {
+    "ashlang": "src/ashlang.js"
+  },
+  "homepage": "https://github.com/ThomasT404/Ashlang#readme",
+  "bugs": {
+    "url": "https://github.com/ThomasT404/Ashlang/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThomasT404/Ashlang.git"
+  }
 }
