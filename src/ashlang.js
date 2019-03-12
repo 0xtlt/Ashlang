@@ -247,7 +247,7 @@ function parse(file, callback){
 function writeJs(out, javascriptProg){
     fs.writeFile(out, javascriptProg, function(err, data) {
         if (err) console.log(err);
-        console.log("Successfully Written to File.");
+        console.log("Successfully Written.");
     });
 }
 
