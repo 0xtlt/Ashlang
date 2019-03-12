@@ -38,7 +38,7 @@ const reg = {
     letChange: /^(([a-zA-Z]|\d|_)+):(.*)/gm,
     longLetvar: /^\$(([a-zA-Z]|\d|_)+)::(.*)/gm,
     longLetconst: /^_(([a-zA-Z]|\d|_)+)::(.*)/gm,
-    for: /^for (([a-zA-Z]|\d|:| |\.|_|\$)+),(([a-zA-Z]|\d|:| |_|=|<|>)+),(([a-zA-Z]|\d|:| |_|\$|\+|\-|\/|\*|\.)+)/gm,
+    for: /^for (([a-zA-Z]|\d|:| |\.|_|\$)+),(([a-zA-Z]|.|\d|:| |_|=|<|>)+),(([a-zA-Z]|\d|:| |_|\$|\+|\-|\/|\*|\.)+)/gm,
     return: /^return (.*)/gm,
     funcParamSet: /@(([a-zA-Z]|\d|_)+)/gms,
     var: /var (([a-zA-Z]| |\d|_)+)=(([a-zA-Z]| |\d|_|"|'|`)+);/mgs,
