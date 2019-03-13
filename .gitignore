@@ -1,4 +1,6 @@
 src/regex.js
 src/lib.js
 src/level.js
-src/components
+src/components/var.js
+src/components/import.js
+src/components/func.js

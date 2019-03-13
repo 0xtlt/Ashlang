@@ -3,6 +3,7 @@
 const fs = require("fs");
 const args = require('./args');
 const vm = require('vm');
+const this_ = require('./components/this');
 
 const argsData = args(process.argv);
 //console.log(argsData); //Debug only
@@ -296,9 +297,9 @@ function parse(file, callback){
     });
 }
 
-function this_(string){
-    return string.replace(reg.thisdetect, "this.$1");
-}
+// function this_(string){
+//     return string.replace(reg.thisdetect, "this.$1");
+// }
 
 function writeJs(out, javascriptProg){
     fs.writeFile(out, javascriptProg, function(err, data) {
