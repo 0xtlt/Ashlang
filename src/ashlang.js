@@ -360,9 +360,3 @@ function parseVar(line){
         return "";
     }
 }
-
-// else if(test(reg.thisvar, line)){ //@ -> this.
-//     let tmp = execute(reg.thisvar, line);
-
-//     return "ok";
-// }
