@@ -7,6 +7,9 @@ class Message
     func constructor(@name, @content)
         csl.log(`${name} - ${content}`)
 
+    func# mystaticfunc()
+        return @name
+
     func getMessage()
         return [@name, @content]
 

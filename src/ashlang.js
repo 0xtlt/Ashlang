@@ -49,6 +49,7 @@ const reg = {
     catch: /^catch\((.*)/gm,
     switch: /^switch\((.*)/gm,
     case: /^case(.*)/gm,
+    thisdetect: /@(([a-zA-Z]|\d|_|.)+)/gms,
 };
 
 function test(regex, string){
@@ -138,17 +139,20 @@ function parse(file, callback){
 
                 if(lastT.length !== 0){
                     let tmplastT = Object.assign([], lastT);
+                    let alreadyElse = false;
                     tmplastT.reverse().map(x => {
                         if(x >= numberOfTab){
                             //else block
-                            if(lines[index].trim() === "else"){
+                            if(lines[index].trim() === "else" && !alreadyElse && x === numberOfTab){
                                 javascriptProg += tab("    ", x)+"} else {"+lastC;
                                 ignoreDown = true;
-                            } /** elseif block */ else if(lines[index].trim().substr(0, 5) === "elsif"){
+                                alreadyElse = true;
+                            } /** elseif block */ else if(lines[index].trim().substr(0, 5) === "elsif" && !alreadyElse && x === numberOfTab){
                                 let tmp = execute(reg.if, scLine.substr(3));
 
                                 javascriptProg += `} else if(${tmp[1]}){`+lastC;
                                 ignoreDown = true;
+                                alreadyElse = true;
                             } /** end block */ else {
                                 if(x === inClass){
                                     inClass = null;
@@ -165,6 +169,7 @@ function parse(file, callback){
 
                 //Parse lines
                 //if longvar is not closed
+
                 if(longVar){
                     if(scLine.substr(scLine.length - 2) === "!:"){
                         longVar = false;
@@ -250,13 +255,13 @@ function parse(file, callback){
                     let tmp = execute(reg.longLetvar, scLine);
 
                     longVar = true;
-                    javascriptProg += `let ${tmp[1]} =${tmp[3]}`;
+                    javascriptProg += `let ${tmp[1]} =${this_(tmp[3])}`;
                 } else if(test(reg.longLetconst, scLine)){ // long const
                     let tmp = execute(reg.longLetconst, scLine);
 
                     longVar = true;
-                    javascriptProg += `const ${tmp[1]} =${tmp[3]}`;
-                } else if(test(reg.letvar, scLine) || test(reg.thisvar, scLine) || test(reg.letChange, scLine) || test(reg.letAll, scLine) || test(reg.letPlus, scLine) || test(reg.letMinus, scLine) || test(reg.constvar, scLine)){ // var
+                    javascriptProg += `const ${tmp[1]} =${this_(tmp[3])}`;
+                } else if(test(reg.letvar, scLine) || test(reg.letChange, scLine) || test(reg.letAll, scLine) || test(reg.letPlus, scLine) || test(reg.letMinus, scLine) || test(reg.constvar, scLine)){ // var
                     javascriptProg += parseVar(scLine);
                 } else if(test(reg.console, scLine)){ // console
                     let tmp = execute(reg.console, scLine);
@@ -266,7 +271,12 @@ function parse(file, callback){
                     let tmp = execute(reg.return, scLine);
 
                     javascriptProg += `return ${parseThis(tmp[1])};`;
+                } else if(test(reg.thisdetect, scLine)){
+                    let tmp = execute(reg.thisdetect, scLine);
+
+                    javascriptProg += `this.${tmp[1]};`;
                 } else {
+                    //javascriptProg += scLine;
                     useLastC = false;
                 }
             } else {
@@ -277,12 +287,17 @@ function parse(file, callback){
             useLastC = true;
         });
 
-        javascriptProg += lastT.map(x => {
-            return tab("    ", x)+"}"+lastC;
-        });
+        lastT.reverse();
+        for(let n = 0; n <= lastT.length-1; n++){
+            javascriptProg += tab("    ", lastT[n])+"}"+lastC;
+        }
 
         callback(javascriptProg);
     });
+}
+
+function this_(string){
+    return string.replace(reg.thisdetect, "this.$1");
 }
 
 function writeJs(out, javascriptProg){
@@ -320,19 +335,15 @@ function parseVar(line){
     if(test(reg.letvar, line)){ //$ -> let
         let tmp = execute(reg.letvar, line);
 
-        return `let ${tmp[1]} =${tmp[3]};`;
+        return `let ${tmp[1]} =${this_(tmp[3])};`;
     } else if(test(reg.constvar, line)){ //_ -> const
         let tmp = execute(reg.constvar, line);
 
-        return `const ${tmp[1]} =${tmp[3]};`;
-    } else if(test(reg.thisvar, line)){ //@ -> this.
-        let tmp = execute(reg.thisvar, line);
-
-        return `this.${tmp[1]} =${tmp[3]};`;
+        return `const ${tmp[1]} =${this_(tmp[3])};`;
     } else if(test(reg.letChange, line)){ //let:
         let tmp = execute(reg.letChange, line);
 
-        return `${tmp[1]} =${tmp[3]};`;
+        return `${tmp[1]} =${this_(tmp[3])};`;
     } else if(test(reg.letAll, line)){ //let all
         let tmp = execute(reg.letAll, line);
 
@@ -346,6 +357,12 @@ function parseVar(line){
 
         return `${tmp[1]}--;`;
     } else {
-        return null;
+        return "";
     }
 }
+
+// else if(test(reg.thisvar, line)){ //@ -> this.
+//     let tmp = execute(reg.thisvar, line);
+
+//     return "ok";
+// }
