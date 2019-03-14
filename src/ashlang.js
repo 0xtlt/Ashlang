@@ -52,6 +52,7 @@ const reg = {
     case: /^case(.*)/gm,
     thisdetect: /@(([a-zA-Z]|\d|_|.)+)/gms,
     forIn: /^for (.*) in (.*)/gms,
+    forOf: /^for (.*) of (.*)/gms,
     module: /^module.((.*)):(.*)/gms,
 };
 
@@ -284,6 +285,12 @@ function parse(file, callback){
                     lastT.push(numberOfTab);
 
                     javascriptProg += `for(${removeSemiC(parseVar(tmp[1]))} in ${this_(tmp[2])}){`;
+                } else if(test(reg.forOf, scLine)){ // for of
+                    let tmp = execute(reg.forOf, scLine);
+
+                    lastT.push(numberOfTab);
+
+                    javascriptProg += `for(${removeSemiC(parseVar(tmp[1]))} of ${this_(tmp[2])}){`;
                 } else if(test(reg.module, scLine)){ // module
                     let tmp = execute(reg.module, scLine);
 
