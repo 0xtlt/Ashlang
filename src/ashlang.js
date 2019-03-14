@@ -31,7 +31,7 @@ const reg = {
     subImport: /(("|')+)(([a-zA-Z]| |\d|_|"|'|`)+)(("|')+)(( |)+)(([a-zA-Z]| |)+)/gms,
     func: /^func (([a-zA-Z]| |\d|_)+)\(((|[a-zA-Z]|@| |\d|,)+)\)/gms,
     staticFunc: /^func# (([a-zA-Z]| |\d|_)+)\(((|[a-zA-Z]|@| |\d|,)+)\)/gms,
-    letvar: /^\$(([^:]*)+):(.*)/gm,
+    letvar: /^\$(([^:]*)+)(:|)(.*)/gm,
     thisvar: /^@(([^:]*)+):(.*)/gm,
     constvar: /^_(([^:]*)+):(.*)/gm,
     letAll: /^(([a-zA-Z]|\d|_)+)(.):(.*)/gm,
@@ -51,6 +51,8 @@ const reg = {
     switch: /^switch\((.*)/gm,
     case: /^case(.*)/gm,
     thisdetect: /@(([a-zA-Z]|\d|_|.)+)/gms,
+    forIn: /^for (.*) in (.*)/gms,
+    module: /^module.((.*)):(.*)/gms,
 };
 
 function test(regex, string){
@@ -166,7 +168,7 @@ function parse(file, callback){
                 }
 
                 //add tab
-                if(!ignoreDown) javascriptProg += lastC !== null ? tab("    ", numberOfTab) : ""; else ignoreDown = false;
+                if(!ignoreDown) javascriptProg += lastC !== null ? tab("    ", numberOfTab) : "";
 
                 //Parse lines
                 //if longvar is not closed
@@ -272,17 +274,29 @@ function parse(file, callback){
                     let tmp = execute(reg.return, scLine);
 
                     javascriptProg += `return ${parseThis(tmp[1])};`;
-                } else if(test(reg.thisdetect, scLine)){
-                    let tmp = execute(reg.thisdetect, scLine);
+                } else if(test(reg.thisvar, scLine)){ // this =
+                    let tmp = execute(reg.thisvar, scLine);
 
-                    javascriptProg += `this.${tmp[1]};`;
+                    javascriptProg += `this.${tmp[1]} =${this_(tmp[3])};`;
+                } else if(test(reg.forIn, scLine)){ // for in
+                    let tmp = execute(reg.forIn, scLine);
+
+                    lastT.push(numberOfTab);
+
+                    javascriptProg += `for(${removeSemiC(parseVar(tmp[1]))} in ${this_(tmp[2])}){`;
+                } else if(test(reg.module, scLine)){ // module
+                    let tmp = execute(reg.module, scLine);
+
+                    javascriptProg += `module.${tmp[1]} = ${parseVar(tmp[3])};`;
                 } else {
-                    //javascriptProg += scLine;
+                    if(!ignoreDown) javascriptProg += this_(scLine)+";"+lastC;
                     useLastC = false;
                 }
             } else {
                 useLastC = false;
             }
+
+            ignoreDown = false;
 
             javascriptProg += useLastC ? lastC : "";
             useLastC = true;
@@ -295,6 +309,14 @@ function parse(file, callback){
 
         callback(javascriptProg);
     });
+}
+
+function removeSemiC(string){
+    if(string[string.length - 1] === ";"){
+        return string.substr(0, string.length - 1);
+    } else {
+        return string;
+    }
 }
 
 // function this_(string){
@@ -333,10 +355,15 @@ function parseThis(string){
  * @param {string} line 
  */
 function parseVar(line){
+    line = line.trim();
     if(test(reg.letvar, line)){ //$ -> let
         let tmp = execute(reg.letvar, line);
 
-        return `let ${tmp[1]} =${this_(tmp[3])};`;
+        if(tmp[4] === ""){
+            return `let ${tmp[1]};`;
+        } else {
+            return `let ${tmp[1]} =${this_(tmp[4])};`;
+        }
     } else if(test(reg.constvar, line)){ //_ -> const
         let tmp = execute(reg.constvar, line);
 
@@ -358,6 +385,6 @@ function parseVar(line){
 
         return `${tmp[1]}--;`;
     } else {
-        return "";
+        return this_(line);
     }
 }

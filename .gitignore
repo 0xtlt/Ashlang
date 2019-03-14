@@ -4,3 +4,4 @@ src/level.js
 src/components/var.js
 src/components/import.js
 src/components/func.js
+samples/bug.ash
